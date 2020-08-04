@@ -5,19 +5,9 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
     user = User.new user_params
 
     if user.save
-      render json: {
-        messages: "Signed Up Successfully",
-        is_success: true,
-        data: {
-          user: user
-        }
-      }, status: :ok
+      json_response "Signed Up Successfully", true, {user: user}, :ok
     else
-      render json: {
-        messages: "Something went wrong",
-        is_success: false,
-        data: {}
-      }, status: :unprocessable_entity
+      json_response "Something went wrong", false, {}, :unprocessable_entity
     end
   end
 
@@ -29,10 +19,6 @@ class Api::V1::RegistrationsController < Devise::RegistrationsController
 
   def check_user_params_present
     return if params[:user].present?
-    render json: {
-      messages: "Parameter missing",
-      is_success: false,
-      data: {}
-    }, status: :bad_request
+    json_response "Parameter missing", false, {}, :bad_request
   end
 end
