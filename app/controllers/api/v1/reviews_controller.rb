@@ -5,23 +5,26 @@ class Api::V1::ReviewsController < ApplicationController
 
   def index
     @reviews = @book.reviews
+    reviews_serializer = parse_json(@reviews)
     if @reviews.present?
-      json_response "All reviews", true, {reviews: @reviews}, :ok
+      json_response "All reviews", true, {reviews: reviews_serializer}, :ok
     else
-      json_response "There are no reviews yet", true, {reviews: @reviews}, :ok
+      json_response "There are no reviews yet", true, {reviews: reviews_serializer}, :ok
     end
   end
 
   def show
-    json_response "Show review successfully", true, {reviews: @review}, :ok
+    review_serializer = parse_json(@review)
+    json_response "Show review successfully", true, {reviews: review_serializer}, :ok
   end
 
   def create
     review = Review.create(review_params)
     review.user_id = current_user.id
     review.book_id = params[:book_id]
+    review_serializer = parse_json(review)
     if review.save
-      json_response "Review created successfully", true, {reviews: review}, :ok
+      json_response "Review created successfully", true, {reviews: review_serializer}, :ok
     else
       json_response "Review creation failed", false, {}, :unprocessable_entity
     end
@@ -30,7 +33,8 @@ class Api::V1::ReviewsController < ApplicationController
   def update
     if correct_user @review.user
       if @review.update(review_params)
-        json_response "Review updated successfully", true, {reviews: @review}, :ok
+        review_serializer = parse_json(@review)
+        json_response "Review updated successfully", true, {reviews: review_serializer}, :ok
       else
         json_response "Review updation failed", false, {}, :unprocessable_entity
       end
