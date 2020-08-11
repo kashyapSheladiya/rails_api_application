@@ -6,3 +6,4 @@ CORS gem
 
 devise gem for authentication
 simple_token_authentication gem for using authentication token
+gem 'faker' for generating fake data
